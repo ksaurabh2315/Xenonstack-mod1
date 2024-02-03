@@ -1,0 +1,102 @@
+#!/bin/bash
+
+# internsctl - Custom Linux command for internship operations
+
+# Usage information
+usage() {
+    echo "Usage: internsctl <command> [options]"
+    echo "Commands:"
+    echo "  user create <username>    Create a new user"
+    echo "  -l, --list                List all available interns"
+    echo "  -a, --add NAME            Add a new intern"
+    echo "  -r, --remove NAME         Remove an intern by NAME"
+    echo "  -h, --help                Display this help message"
+    exit 1
+}
+
+# Main function
+main() {
+    case $1 in
+        user)
+            shift
+            handle_user_command "$@"
+            ;;
+        -l | --list)
+            # List all available interns
+            list_interns
+            ;;
+        -a | --add)
+            # Add a new intern
+            add_intern "$2"
+            ;;
+        -r | --remove)
+            # Remove an intern
+            remove_intern "$2"
+            ;;
+        -h | --help)
+            # Display help
+            usage
+            ;;
+        *)
+            usage
+            ;;
+    esac
+}
+
+# Function to handle user commands
+handle_user_command() {
+    case $1 in
+        create)
+            create_user "$2"
+            ;;
+        *)
+            usage
+            ;;
+    esac
+}
+
+# Function to create a new user
+create_user() {
+    username="$1"
+    if [ -z "$username" ]; then
+        echo "Error: Username not provided."
+        exit 1
+    fi
+
+    # Check if the user already exists
+    if id "$username" &>/dev/null; then
+        echo "Error: User '$username' already exists."
+        exit 1
+    fi
+
+    # Create the user
+    sudo useradd -m "$username"
+    if [ $? -eq 0 ]; then
+        echo "User '$username' created successfully."
+    else
+        echo "Error: Failed to create user '$username'."
+    fi
+}
+
+# Function to list interns
+list_interns() {
+    echo "Listing all available interns:"
+    # Add your logic to list interns here
+}
+
+# Function to add an intern
+add_intern() {
+    name="$1"
+    echo "Adding intern: $name"
+    # Add your logic to add intern here
+}
+
+# Function to remove an intern
+remove_intern() {
+    name="$1"
+    echo "Removing intern: $name"
+    # Add your logic to remove intern here
+}
+
+# Entry point
+main "$@"
